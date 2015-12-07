@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.media.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox fx:id="node" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="beatmap.Controller">
+  <children>
+    <MenuBar>
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem fx:id="openMusicMenuItem" mnemonicParsing="false" text="Open MP3 File" />
+            <MenuItem fx:id="exportBeatmapMenuItem" mnemonicParsing="false" text="Export Beatmap" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Settings">
+          <items>
+                  <Menu mnemonicParsing="false" text="Snap to Note length">
+                    <items>
+                        <CheckMenuItem fx:id="zeroNoteLengthMenuItem" mnemonicParsing="false" text="None" />
+                        <CheckMenuItem fx:id="wholeNoteLengthMenuItem" mnemonicParsing="false" text="1" />
+                        <CheckMenuItem fx:id="halfNoteLengthMenuItem" mnemonicParsing="false" text="1/2" />
+                        <CheckMenuItem fx:id="quarterNoteLengthMenuItem" mnemonicParsing="false" text="1/4" />
+                        <CheckMenuItem fx:id="eighthNoteLengthMenuItem" mnemonicParsing="false" text="1/8" />
+                        <CheckMenuItem fx:id="sixteenNoteLengthMenuItem" mnemonicParsing="false" text="1/16" />
+                    </items>
+                  </Menu>
+                  <MenuItem fx:id="keyBindMenuItem" mnemonicParsing="false" text="Set Key Bindings" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+      <SplitPane dividerPositions="0.568075117370892" minWidth="-Infinity" prefHeight="463.0" prefWidth="1280.0" VBox.vgrow="NEVER">
+         <items>
+          <AnchorPane maxHeight="-1.0" prefHeight="694.0" prefWidth="896.0">
+            <children>
+                  <MediaView fx:id="mediaView" fitHeight="200.0" fitWidth="200.0" layoutX="96.0" layoutY="39.0" visible="false" />
+                  <HBox layoutX="94.0" layoutY="533.0" prefHeight="35.0" prefWidth="435.0">
+                     <children>
+                        <Button fx:id="playButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="44.0" text="Play" />
+                        <Label prefHeight="17.0" prefWidth="38.0" text="Time">
+                           <HBox.margin>
+                              <Insets left="10.0" right="2.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Slider fx:id="timeSlider" prefHeight="25.0" prefWidth="150.0" />
+                        <Label fx:id="timeLabel" text="--:--/--:--">
+                           <HBox.margin>
+                              <Insets top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label text="Vol">
+                           <HBox.margin>
+                              <Insets left="20.0" right="2.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Slider fx:id="volumeSlider" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="81.0" />
+                     </children>
+                  </HBox>
+                  <ToggleButton fx:id="generateBPMToggle" layoutX="543.0" layoutY="508.0" mnemonicParsing="false" text="Generate BPM Mode" />
+                  <Text layoutX="543.0" layoutY="555.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BPM: " />
+                  <TextField fx:id="bpmField" layoutX="574.0" layoutY="538.0" prefHeight="25.0" prefWidth="96.0" text="0" />
+                  <MediaView fx:id="hitSoundPlayerView" fitHeight="200.0" fitWidth="200.0" visible="false" />
+                  <ToggleButton fx:id="beatmapModeToggle" layoutX="543.0" layoutY="587.0" mnemonicParsing="false" text="Record Beatmap Mode" />
+                  <Button fx:id="clearBeatmapButton" layoutX="543.0" layoutY="619.0" mnemonicParsing="false" text="Clear Beatmap" />
+                  <TextField fx:id="offsetTextField" layoutX="116.0" layoutY="607.0" prefHeight="25.0" prefWidth="127.0" />
+                  <Text layoutX="116.0" layoutY="600.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Offset (milliseconds)" />
+            </children>
+          </AnchorPane>
+            <AnchorPane prefHeight="644.0" prefWidth="258.0">
+               <children>
+                  <TableView fx:id="hitObjectTable" prefHeight="695.0" prefWidth="557.0">
+                    <columns>
+                        <TableColumn fx:id="hitObjectColumn" prefWidth="75.0" text="Hit Object#" />
+                      <TableColumn fx:id="beatNumberColumn" prefWidth="96.0" text="Beat# (Total)" />
+                      <TableColumn fx:id="timeColumn" prefWidth="162.0" text="Time" />
+                        <TableColumn fx:id="keyColumn" prefWidth="76.0" text="Key" />
+                        <TableColumn fx:id="hitObjectHoldDurationColumn" prefWidth="151.0" text="HO Hold Duration" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+  </children>
+</VBox>

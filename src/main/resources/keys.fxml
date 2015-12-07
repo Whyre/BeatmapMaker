@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="beatmap.KeyController">
+   <children>
+      <TableView fx:id="keyTable" prefHeight="361.0" prefWidth="433.0">
+        <columns>
+          <TableColumn fx:id="keyNumberColumn" prefWidth="75.0" text="Key Number" />
+          <TableColumn fx:id="keyBindingColumn" prefWidth="143.0" text="Key Binding" />
+        </columns>
+      </TableView>
+      <ButtonBar prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Keys" />
+            <TextField fx:id="keyNumberField" text="4" />
+          <Button fx:id="resetButton" mnemonicParsing="false" text="Reset to Default" />
+            <Button fx:id="saveButton" mnemonicParsing="false" text="Save to File" />
+        </buttons>
+      </ButtonBar>
+   </children>
+</VBox>
