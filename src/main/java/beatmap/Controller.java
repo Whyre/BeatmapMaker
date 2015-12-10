@@ -42,6 +42,7 @@ import java.util.*;
 
 public class Controller implements Initializable {
 
+    private static final String timeFormat = "%02d:%02d:%03d";
     private boolean atEndOfMedia = false;
     private boolean stopRequested = false;
     private boolean generateBPMMode = false;
@@ -60,7 +61,6 @@ public class Controller implements Initializable {
     private int snapBeatDenominator;
     private double snapLength;
     private long startTime;
-    private static final String timeFormat = "%02d:%02d:%03d";
     private List<KeyCode> keyCodes;
     private ObservableList<HitObject> hitObjects;
 
@@ -113,6 +113,58 @@ public class Controller implements Initializable {
     @FXML
     private TableView<HitObject> hitObjectTable;
 
+    private static String formatTime(Duration elapsed, Duration duration) {
+        int longElapsed = (int) Math.floor(elapsed.toSeconds());
+        int elapsedHours = longElapsed / (60 * 60);
+        if (elapsedHours > 0) {
+            longElapsed -= elapsedHours * 60 * 60;
+        }
+        int elapsedMinutes = longElapsed / 60;
+        int elapsedSeconds = longElapsed - elapsedHours * 60 * 60
+                - elapsedMinutes * 60;
+
+        if (duration.greaterThan(Duration.ZERO)) {
+            int intDuration = (int) Math.floor(duration.toSeconds());
+            int durationHours = intDuration / (60 * 60);
+            if (durationHours > 0) {
+                intDuration -= durationHours * 60 * 60;
+            }
+            int durationMinutes = intDuration / 60;
+            int durationSeconds = intDuration - durationHours * 60 * 60 -
+                    durationMinutes * 60;
+            if (durationHours > 0) {
+                return String.format("%d:%02d:%02d/%d:%02d:%02d",
+                        elapsedHours, elapsedMinutes, elapsedSeconds,
+                        durationHours, durationMinutes, durationSeconds);
+            } else {
+                return String.format("%02d:%02d/%02d:%02d",
+                        elapsedMinutes, elapsedSeconds, durationMinutes,
+                        durationSeconds);
+            }
+        } else {
+            if (elapsedHours > 0) {
+                return String.format("%d:%02d:%02d", elapsedHours,
+                        elapsedMinutes, elapsedSeconds);
+            } else {
+                return String.format("%02d:%02d", elapsedMinutes,
+                        elapsedSeconds);
+            }
+        }
+    }
+
+    private static <S> void addAutoScroll(final TableView<S> view) {
+        if (view == null) {
+            throw new NullPointerException();
+        }
+
+        view.getItems().addListener((ListChangeListener<S>) (c -> {
+            c.next();
+            final int size = view.getItems().size();
+            if (size > 0) {
+                view.scrollTo(size - 1);
+            }
+        }));
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -175,7 +227,7 @@ public class Controller implements Initializable {
         hitsounds = new Clip[32];
         for (int i = 0; i < hitsounds.length; i++) {
             try {
-                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(Controller.class.getResource("/hitsound old.wav"));
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(Controller.class.getResource("hitsound.wav"));
                 hitsounds[i] = AudioSystem.getClip();
                 hitsounds[i].open(audioInputStream);
             } catch (Exception e) {
@@ -613,59 +665,6 @@ public class Controller implements Initializable {
         hitsounds[hitsoundIndex].setFramePosition(0);
         hitsounds[hitsoundIndex].start();
         hitsoundIndex = (hitsoundIndex + 1) % hitsounds.length;
-    }
-
-    private static String formatTime(Duration elapsed, Duration duration) {
-        int longElapsed = (int) Math.floor(elapsed.toSeconds());
-        int elapsedHours = longElapsed / (60 * 60);
-        if (elapsedHours > 0) {
-            longElapsed -= elapsedHours * 60 * 60;
-        }
-        int elapsedMinutes = longElapsed / 60;
-        int elapsedSeconds = longElapsed - elapsedHours * 60 * 60
-                - elapsedMinutes * 60;
-
-        if (duration.greaterThan(Duration.ZERO)) {
-            int intDuration = (int) Math.floor(duration.toSeconds());
-            int durationHours = intDuration / (60 * 60);
-            if (durationHours > 0) {
-                intDuration -= durationHours * 60 * 60;
-            }
-            int durationMinutes = intDuration / 60;
-            int durationSeconds = intDuration - durationHours * 60 * 60 -
-                    durationMinutes * 60;
-            if (durationHours > 0) {
-                return String.format("%d:%02d:%02d/%d:%02d:%02d",
-                        elapsedHours, elapsedMinutes, elapsedSeconds,
-                        durationHours, durationMinutes, durationSeconds);
-            } else {
-                return String.format("%02d:%02d/%02d:%02d",
-                        elapsedMinutes, elapsedSeconds, durationMinutes,
-                        durationSeconds);
-            }
-        } else {
-            if (elapsedHours > 0) {
-                return String.format("%d:%02d:%02d", elapsedHours,
-                        elapsedMinutes, elapsedSeconds);
-            } else {
-                return String.format("%02d:%02d", elapsedMinutes,
-                        elapsedSeconds);
-            }
-        }
-    }
-
-    private static <S> void addAutoScroll(final TableView<S> view) {
-        if (view == null) {
-            throw new NullPointerException();
-        }
-
-        view.getItems().addListener((ListChangeListener<S>) (c -> {
-            c.next();
-            final int size = view.getItems().size();
-            if (size > 0) {
-                view.scrollTo(size - 1);
-            }
-        }));
     }
 
 }
