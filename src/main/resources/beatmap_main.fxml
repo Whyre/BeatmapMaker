@@ -72,6 +72,7 @@
                   <Button fx:id="clearBeatmapButton" layoutX="543.0" layoutY="619.0" mnemonicParsing="false" text="Clear Beatmap" />
                   <TextField fx:id="offsetTextField" layoutX="116.0" layoutY="607.0" prefHeight="25.0" prefWidth="127.0" />
                   <Text layoutX="116.0" layoutY="600.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Offset (milliseconds)" />
+                  <ToggleButton fx:id="playHitObjectToggle" layoutX="296.0" layoutY="600.0" mnemonicParsing="false" text="Play Beatmap with Hit Objects" />
             </children>
           </AnchorPane>
             <AnchorPane prefHeight="644.0" prefWidth="258.0">

@@ -46,6 +46,7 @@ public class Controller implements Initializable {
     private boolean stopRequested = false;
     private boolean generateBPMMode = false;
     private boolean beatmapMode = false;
+    private boolean playHitObjects = false;
     private boolean audioFileLoaded = false;
     private boolean snapToBeat = false;
     private double oldTime;
@@ -90,7 +91,7 @@ public class Controller implements Initializable {
     private TextField bpmField, offsetTextField;
 
     @FXML
-    private ToggleButton generateBPMToggle, beatmapModeToggle;
+    private ToggleButton generateBPMToggle, beatmapModeToggle, playHitObjectToggle;
 
     @FXML
     private VBox node;
@@ -309,6 +310,30 @@ public class Controller implements Initializable {
                     }
             );
 
+            playHitObjectToggle.setOnAction(event2 -> {
+                playHitObjects = !playHitObjects;
+                if (playHitObjects) {
+                    startTime = System.currentTimeMillis();
+                    mp.seek(mp.getStartTime());
+                    mp.play();
+                    long sleepTime = 0;
+                    for (HitObject hitObject : hitObjects) {
+                        //if (hitObject.getBeatMixedNumber().toDouble() / bpm == elapsedTime) {
+                        try {
+                            Thread.sleep((long) (hitObject.getBeatMixedNumber().toDouble() / bpm) * 60000 - sleepTime);
+                            hitsounds[hitsoundIndex].setFramePosition(0);
+                            hitsounds[hitsoundIndex].start();
+                            hitsoundIndex = (hitsoundIndex + 1) % hitsounds.length;
+                            sleepTime = (long) (hitObject.getBeatMixedNumber().toDouble() / bpm) * 60000;
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                } else {
+                    mp.stop();
+                }
+
+            });
+
             CheckMenuItem[] noteLengths = {zeroNoteLengthMenuItem, wholeNoteLengthMenuItem, halfNoteLengthMenuItem,
                     quarterNoteLengthMenuItem, eighthNoteLengthMenuItem, sixteenNoteLengthMenuItem};
 
@@ -365,16 +390,16 @@ public class Controller implements Initializable {
 
         timeSlider.valueProperty().addListener(ov -> {
             if (audioFileLoaded && timeSlider.isValueChanging()) {
-                    // multiply duration by percentage calculated by slider position
-                    mp.seek(duration.multiply(timeSlider.getValue() / 100.0));
-                }
+                // multiply duration by percentage calculated by slider position
+                mp.seek(duration.multiply(timeSlider.getValue() / 100.0));
+            }
         });
 
 
         volumeSlider.valueProperty().addListener(ov -> {
             if (audioFileLoaded && volumeSlider.isValueChanging()) {
-                    mp.setVolume(volumeSlider.getValue() / 100.0);
-                }
+                mp.setVolume(volumeSlider.getValue() / 100.0);
+            }
         });
 
         //       Queue<AudioClip> audioClipQueue = new ArrayDeque<>(32);
@@ -390,17 +415,17 @@ public class Controller implements Initializable {
                 });
             }
             if (mp != null && beatmapMode) {
-                    for (int i = 0; i < keyCodes.size(); i++) {
-                        if (event.getCode() == keyCodes.get(i)) {
+                for (int i = 0; i < keyCodes.size(); i++) {
+                    if (event.getCode() == keyCodes.get(i)) {
 //                            hitsounds[hitsoundIndex].setFramePosition(0);
 //                            hitsounds[hitsoundIndex].start();
 //                            hitsoundIndex = (hitsoundIndex + 1) % hitsounds.length;
-                            hitObjectNumber++;
-                            if (snapToBeat) updateBeatmapSnap(hitObjects, i);
-                            else updateBeatmap(hitObjects, i);
-                        }
+                        hitObjectNumber++;
+                        if (snapToBeat) updateBeatmapSnap(hitObjects, i);
+                        else updateBeatmap(hitObjects, i);
                     }
                 }
+            }
         });
 
 
@@ -462,9 +487,9 @@ public class Controller implements Initializable {
                             for (HitObject hitObject : hitObjects) {
                                 if (hitObject.getKey() == i) {
                                     if (!hitObject.getHitDuration().isEmpty() && hitObject.getHitDurationMixedNumber().compareTo(new MixedNumber(0, 0, 0)) != 0)
-                                    bufferedWriter.write(hitObject.getBeatMixedNumber().getWholeInt() + "n"
-                                            + hitObject.getBeatMixedNumber().getNumerator()
-                                            + "d" + hitObject.getHitDurationMixedNumber() + " ");
+                                        bufferedWriter.write(hitObject.getBeatMixedNumber().getWholeInt() + "n"
+                                                + hitObject.getBeatMixedNumber().getNumerator()
+                                                + "d" + hitObject.getHitDurationMixedNumber() + " ");
                                     else bufferedWriter.write(hitObject.getBeatMixedNumber().getWholeInt() + "n"
                                             + hitObject.getBeatMixedNumber().getNumerator() + " ");
                                 }
@@ -535,7 +560,7 @@ public class Controller implements Initializable {
                 long elapsedSeconds = (long) ((((beatWhole / (double) bpm)) - elapsedMinutes) * 60);
                 double elapsedMilliseconds = ((((beatWhole / (double) bpm) - elapsedMinutes) * 60) - elapsedSeconds) * 1000;
                 int beat = beatWhole + (((longElapsed / snapLength) - beatInt) >= (snapLength / 2) ? 1 : 0);
-                HitObject ho= new HitObject(hitObjectNumber, "" + beat, String.format(timeFormat,
+                HitObject ho = new HitObject(hitObjectNumber, "" + beat, String.format(timeFormat,
                         elapsedMinutes, elapsedSeconds, (int) elapsedMilliseconds), keyNumber + 1, "");
                 if (ov.isEmpty() || !ho.isEqualTo(ov.get(ov.size() - 1))) addAndPlaySound(ov, ho);
             } else {

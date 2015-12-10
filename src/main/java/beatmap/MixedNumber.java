@@ -26,6 +26,13 @@ public class MixedNumber implements Comparable<MixedNumber> {
         this.denominator = denominator;
     }
 
+    public double toDouble() {
+        if (denominator == 0) {
+            return wholeInt;
+        }
+        return wholeInt + ((double) numerator / (double) denominator);
+    }
+
     public int getWholeInt() {
         return wholeInt;
     }
